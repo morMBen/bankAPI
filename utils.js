@@ -111,7 +111,7 @@ const withdrawMoney = (id, amount) => {
         saveClients(clients);
         return stringToJson('message', `The client now have ${clients[index].cash} dollars cash`)
     } else {
-        throw new Error(`You have exceeded the maximum withdrawal amount, The maximum amount to withdraw is ${clients[index].cash + clients[index].credit} dollars`)
+        throw new Error(`You have exceeded the maximum amount, The maximum amount to withdraw or transfer is ${clients[index].cash + clients[index].credit} dollars`)
     }
 }
 
@@ -136,11 +136,26 @@ const checkID = (index) => {
     }
 }
 
-//Check input number - is number? is positive or equal to zero?
+// Check input number - is number? is positive or equal to zero?
 const checkNumber = (num) => {
     if (!Number(num) || Number(num) < 0) {
         throw new Error('The input must be ONLY number - equal or larger to zero')
     }
+}
+
+// Transfer money from one client to another
+const transferMoney = (params) => {
+    withdrawMoney(params.idFrom, params.amount);
+    return depositCash(params.idTo, params.amount)
+}
+
+// Fetch the clients that are active and have a specified amount of cash.
+const filterActive = (params) => {
+    const clients = getAllClients();
+    const result = clients.filter(c => {
+        return c.cash >= params.fromAmount && c.cash <= params.toAmount && c.active === true;
+    })
+    return result;
 }
 
 module.exports = {
@@ -151,4 +166,6 @@ module.exports = {
     depositCash,
     updateCredit,
     withdrawMoney,
+    transferMoney,
+    filterActive
 }

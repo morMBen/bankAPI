@@ -9,10 +9,30 @@ const {
     depositCash,
     updateCredit,
     withdrawMoney,
+    transferMoney,
+    filterActive
 } = require('./utils.js')
 
 
 app.use(express.json())
+
+// Fetch the clients that are active and have a specified amount of cash.
+app.get('/api/clients/active/:fromAmount/:toAmount', (req, res) => {
+    try {
+        res.status(200).send(filterActive(req.params))
+    } catch (e) {
+        res.status(400).send({ error: e.message })
+    }
+})
+
+//Transfer money from one user to another
+app.put('/api/clients/:idFrom/:amount/:idTo', (req, res) => {
+    try {
+        res.status(201).send(transferMoney(req.params))
+    } catch (e) {
+        res.status(400).send({ error: e.message })
+    }
+})
 
 //Withdraw money from the client account
 app.get('/api/clients/:id/:amount', (req, res) => {

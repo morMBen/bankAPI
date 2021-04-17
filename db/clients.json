@@ -4,9 +4,9 @@
         "first": "Mor Mordechai",
         "last": "Ben",
         "name": "Mor Mordechi Ben",
-        "active": false,
+        "active": true,
         "credit": 30000,
-        "cash": 49000
+        "cash": 49111
     },
     {
         "id": "302030234",
@@ -15,6 +15,24 @@
         "name": "Noa Emilia Kathrin Baron",
         "active": true,
         "credit": 2000,
-        "cash": 20110
+        "cash": 19989
+    },
+    {
+        "id": "521917828",
+        "first": "Mumin",
+        "last": "Aba",
+        "name": "Mumin Aba",
+        "active": true,
+        "credit": 3000,
+        "cash": 900
+    },
+    {
+        "id": "654030984",
+        "first": "Dani",
+        "last": "Shovevani",
+        "name": "Dani Shovevani",
+        "active": false,
+        "credit": 8000,
+        "cash": 5000
     }
 ]
