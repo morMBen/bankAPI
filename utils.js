@@ -47,7 +47,7 @@ const addNewClient = (client) => {
             cash: client.cash ? client.cash : 0,
         });
         saveClients(clients);
-        return client;
+        return stringToJson('new-client', client);
     } else {
         throw new Error('The client is all ready exist in the DB!')
     }
@@ -59,22 +59,42 @@ const saveClients = (clients) => {
     fs.writeFileSync('./db/clients.json', dataJSON);
 }
 
+// return json format
+const stringToJson = (message, string) => {
+    return JSON.stringify({
+        [message]: string
+    });
+}
+
 // Activate specific user (using saveClient())
 const activateClient = (id, isActive) => {
     const clients = getAllClients();
     const index = clients.findIndex((c) => c.id === id)
-    // const client = clients.find((c) => c.id === id)
     if (index !== -1) {
         clients[index] = { ...clients[index], active: isActive }
         saveClients(clients);
-        return `The client is ${isActive ? 'active' : 'unactive'}`
+        return stringToJson('message', `The client is ${isActive ? 'active' : 'unactive'}`)
     } else {
         throw new Error('There is no user with the specific id!')
     }
 }
 
-const unactivateClient = () => {
-
+const depositCash = (id, amount) => {
+    const clients = getAllClients();
+    const index = clients.findIndex((c) => c.id === id)
+    if (index !== -1) {
+        if (clients[index].active) {
+            clients[index] = {
+                ...clients[index], cash: clients[index].cash + Number(amount)
+            }
+            saveClients(clients);
+            return stringToJson('message', `The client now have ${clients[index].cash} dollars cash.`)
+        } else {
+            throw new Error('Canot deposit money! the client is not active.')
+        }
+    } else {
+        throw new Error('There is no user with the specific id!')
+    }
 }
 
 module.exports = {
@@ -82,5 +102,5 @@ module.exports = {
     getClientsData,
     addNewClient,
     activateClient,
-    unactivateClient,
+    depositCash,
 }

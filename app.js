@@ -5,11 +5,13 @@ const {
     getAllClients,
     getClientsData,
     addNewClient,
-    activateClient
+    activateClient,
+    depositCash
 } = require('./utils.js')
 
 
 app.use(express.json())
+
 
 //Activate user by ID
 app.put('/api/clients/:id/active', (req, res) => {
@@ -24,6 +26,15 @@ app.put('/api/clients/:id/active', (req, res) => {
 app.put('/api/clients/:id/unactive', (req, res) => {
     try {
         res.status(201).send(activateClient(req.params.id, false))
+    } catch (e) {
+        res.status(400).send({ error: e.message })
+    }
+})
+
+// Deposit cash to a user
+app.put('/api/clients/:id/:amount', (req, res) => {
+    try {
+        res.status(201).send(depositCash(req.params.id, req.params.amount))
     } catch (e) {
         res.status(400).send({ error: e.message })
     }

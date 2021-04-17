@@ -13,8 +13,8 @@
         "first": "Noa Emilia Kathrin",
         "last": "Baron",
         "name": "Noa Emilia Kathrin Baron",
-        "active": false,
+        "active": true,
         "credit": 10000,
-        "cash": 15000
+        "cash": 23880
     }
 ]
