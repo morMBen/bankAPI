@@ -53,12 +53,6 @@ const addNewClient = (client) => {
     }
 }
 
-// Save clients data to clients.json
-const saveClients = (clients) => {
-    const dataJSON = JSON.stringify(clients);
-    fs.writeFileSync('./db/clients.json', dataJSON);
-}
-
 // return json format
 const stringToJson = (message, string) => {
     return JSON.stringify({
@@ -70,57 +64,83 @@ const stringToJson = (message, string) => {
 const activateClient = (id, isActive) => {
     const clients = getAllClients();
     const index = clients.findIndex((c) => c.id === id)
-    if (index !== -1) {
-        clients[index] = { ...clients[index], active: isActive }
-        saveClients(clients);
-        return stringToJson('message', `The client is ${isActive ? 'active' : 'unactive'}`)
-    } else {
-        throw new Error('There is no client with the specific id!')
-    }
+    checkID(index);
+    clients[index] = { ...clients[index], active: isActive }
+    saveClients(clients);
+    return stringToJson('message', `The client is ${isActive ? 'active' : 'unactive'}`)
 }
 
 // Deposit cash to a client (using saveClient())
 const depositCash = (id, amount) => {
     const clients = getAllClients();
-    const index = clients.findIndex((c) => c.id === id)
-    if (index !== -1) {
-        if (clients[index].active) {
-            clients[index] = {
-                ...clients[index], cash: clients[index].cash + Number(amount)
-            }
-            saveClients(clients);
-            return stringToJson('message', `The client now have ${clients[index].cash} dollars cash.`)
-        } else {
-            throw new Error('Canot deposit money! the client is not active.')
-        }
-    } else {
-        throw new Error('There is no user with the specific id!')
+    const index = clients.findIndex((c) => c.id === id);
+    checkID(index);
+    checkActivetion(clients, index);
+    clients[index] = {
+        ...clients[index], cash: clients[index].cash + Number(amount)
     }
+    saveClients(clients);
+    return stringToJson('message', `The client now have ${clients[index].cash} dollars cash.`)
 }
 
 //Update a client credit (only positive numbers)
 const updateCredit = (id, creditAmount) => {
     const clients = getAllClients();
     const index = clients.findIndex((c) => c.id === id)
-    console.log(Number(creditAmount))
-    if (index !== -1) {
-        if ((Number(creditAmount) || Number(creditAmount) === 0) && Number(creditAmount) >= 0) {
-            clients[index] = {
-                ...clients[index], credit: creditAmount
-            }
-            saveClients(clients);
-            return stringToJson('message', `The client now have ${creditAmount} dollars credit`)
-        } else {
-            throw new Error('The credit amount must be ONLY number equal or larger to zero')
+    checkID(index);
+    checkActivetion(clients, index);
+    checkNumber(creditAmount);
+    clients[index] = {
+        ...clients[index], credit: Number(creditAmount)
+    }
+    saveClients(clients);
+    return stringToJson('message', `The client now have ${creditAmount} dollars credit`)
+}
+
+//Withdraw money from the client account
+const withdrawMoney = (id, amount) => {
+    const clients = getAllClients();
+    const index = clients.findIndex((c) => c.id === id)
+    checkID(index);
+    checkActivetion(clients, index);
+    checkNumber(amount);
+    if ((clients[index].cash + clients[index].credit - Number(amount)) >= 0) {
+        clients[index] = {
+            ...clients[index], cash: clients[index].cash - Number(amount)
         }
+        saveClients(clients);
+        return stringToJson('message', `The client now have ${clients[index].cash} dollars cash`)
     } else {
+        throw new Error(`You have exceeded the maximum withdrawal amount, The maximum amount to withdraw is ${clients[index].cash + clients[index].credit} dollars`)
+    }
+}
+
+
+// Save clients data to clients.json
+const saveClients = (clients) => {
+    const dataJSON = JSON.stringify(clients);
+    fs.writeFileSync('./db/clients.json', dataJSON);
+}
+
+//Check if the ID is currect and if the client is active
+const checkActivetion = (clients, index) => {
+    if (!clients[index].active) {
+        throw new Error('The client is not active! Please activate the client.')
+    }
+}
+
+//Check if the ID is currect
+const checkID = (index) => {
+    if (index === -1) {
         throw new Error('There is no user with the specific id!')
     }
 }
 
-//Withdraw money from the client account
-const withdrawMoney = () => {
-
+//Check input number - is number? is positive or equal to zero?
+const checkNumber = (num) => {
+    if (!Number(num) || Number(num) < 0) {
+        throw new Error('The input must be ONLY number - equal or larger to zero')
+    }
 }
 
 module.exports = {

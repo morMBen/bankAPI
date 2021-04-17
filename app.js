@@ -14,6 +14,15 @@ const {
 
 app.use(express.json())
 
+//Withdraw money from the client account
+app.get('/api/clients/:id/:amount', (req, res) => {
+    try {
+        res.status(201).send(withdrawMoney(req.params.id, req.params.amount))
+    } catch (e) {
+        res.status(400).send({ error: e.message })
+    }
+})
+
 //Update a client credit (only positive numbers)
 app.put('/api/credit/:id/:amount', (req, res) => {
     try {
