@@ -1,0 +1,20 @@
+[
+    {
+        "id": "021917984",
+        "first": "Mor Mordechai",
+        "last": "Ben",
+        "name": "Mor Mordechi Ben",
+        "active": false,
+        "credit": 30000,
+        "cash": 49000
+    },
+    {
+        "id": "302030234",
+        "first": "Noa Emilia Kathrin",
+        "last": "Baron",
+        "name": "Noa Emilia Kathrin Baron",
+        "active": false,
+        "credit": 10000,
+        "cash": 15000
+    }
+]
