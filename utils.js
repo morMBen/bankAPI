@@ -66,7 +66,7 @@ const stringToJson = (message, string) => {
     });
 }
 
-// Activate specific user (using saveClient())
+// Activate specific client (using saveClient())
 const activateClient = (id, isActive) => {
     const clients = getAllClients();
     const index = clients.findIndex((c) => c.id === id)
@@ -75,10 +75,11 @@ const activateClient = (id, isActive) => {
         saveClients(clients);
         return stringToJson('message', `The client is ${isActive ? 'active' : 'unactive'}`)
     } else {
-        throw new Error('There is no user with the specific id!')
+        throw new Error('There is no client with the specific id!')
     }
 }
 
+// Deposit cash to a client (using saveClient())
 const depositCash = (id, amount) => {
     const clients = getAllClients();
     const index = clients.findIndex((c) => c.id === id)
@@ -97,10 +98,37 @@ const depositCash = (id, amount) => {
     }
 }
 
+//Update a client credit (only positive numbers)
+const updateCredit = (id, creditAmount) => {
+    const clients = getAllClients();
+    const index = clients.findIndex((c) => c.id === id)
+    console.log(Number(creditAmount))
+    if (index !== -1) {
+        if ((Number(creditAmount) || Number(creditAmount) === 0) && Number(creditAmount) >= 0) {
+            clients[index] = {
+                ...clients[index], credit: creditAmount
+            }
+            saveClients(clients);
+            return stringToJson('message', `The client now have ${creditAmount} dollars credit`)
+        } else {
+            throw new Error('The credit amount must be ONLY number equal or larger to zero')
+        }
+    } else {
+        throw new Error('There is no user with the specific id!')
+    }
+}
+
+//Withdraw money from the client account
+const withdrawMoney = () => {
+
+}
+
 module.exports = {
     getAllClients,
     getClientsData,
     addNewClient,
     activateClient,
     depositCash,
+    updateCredit,
+    withdrawMoney,
 }
