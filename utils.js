@@ -23,7 +23,7 @@ const getClientsData = (id) => {
     }
 }
 
-//Add new client to data (using saveClient())
+// Add new client to data (using saveClient())
 const addNewClient = (client) => {
     const clients = getAllClients();
     const findDuplicate = clients.find(c => c.id === client.id)
@@ -59,8 +59,28 @@ const saveClients = (clients) => {
     fs.writeFileSync('./db/clients.json', dataJSON);
 }
 
+// Activate specific user (using saveClient())
+const activateClient = (id, isActive) => {
+    const clients = getAllClients();
+    const index = clients.findIndex((c) => c.id === id)
+    // const client = clients.find((c) => c.id === id)
+    if (index !== -1) {
+        clients[index] = { ...clients[index], active: isActive }
+        saveClients(clients);
+        return `The client is ${isActive ? 'active' : 'unactive'}`
+    } else {
+        throw new Error('There is no user with the specific id!')
+    }
+}
+
+const unactivateClient = () => {
+
+}
+
 module.exports = {
     getAllClients,
     getClientsData,
     addNewClient,
+    activateClient,
+    unactivateClient,
 }

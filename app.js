@@ -1,10 +1,33 @@
 const express = require('express');
 const app = express();
 const PORT = 3000;
-const { getAllClients, getClientsData, addNewClient } = require('./utils.js')
+const {
+    getAllClients,
+    getClientsData,
+    addNewClient,
+    activateClient
+} = require('./utils.js')
 
 
 app.use(express.json())
+
+//Activate user by ID
+app.put('/api/clients/:id/active', (req, res) => {
+    try {
+        res.status(201).send(activateClient(req.params.id, true))
+    } catch (e) {
+        res.status(400).send({ error: e.message })
+    }
+})
+
+//Unactivate user by ID
+app.put('/api/clients/:id/unactive', (req, res) => {
+    try {
+        res.status(201).send(activateClient(req.params.id, false))
+    } catch (e) {
+        res.status(400).send({ error: e.message })
+    }
+})
 
 // Get specific client data.
 app.get('/api/clients/:id', (req, res) => {
@@ -22,9 +45,8 @@ app.get('/api/clients', (req, res) => {
 
 // Add new client.
 app.post('/api/clients', (req, res) => {
-    // console.log(req.body)
     try {
-        res.status(200).send(addNewClient(req.body))
+        res.status(201).send(addNewClient(req.body))
     } catch (e) {
         res.status(400).send({ error: e.message })
     }
